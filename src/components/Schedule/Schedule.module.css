@@ -1,0 +1,9 @@
+.Schedule {
+    background-color: #48e;
+    min-width: 300px;
+    min-height: 300px;
+    border-radius: 20px;
+    border: 1px solid #eee;
+    padding: 10px;
+    color: #ffffff;
+}
