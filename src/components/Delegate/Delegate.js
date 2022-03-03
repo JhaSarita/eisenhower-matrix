@@ -7,8 +7,8 @@ const Delegate = (props) => {
         <Fragment>
             <div className={classes.Delegate}>
                 <h2>Delegate</h2>
-                {props.data.map((elem) => {
-                    return <p>{elem}</p>
+                {props.data.map((elements, index) => {
+                    return <p key={index}>{elements}</p>
                 })}
             </div>
         </Fragment>

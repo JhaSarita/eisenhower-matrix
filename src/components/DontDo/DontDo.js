@@ -7,8 +7,8 @@ const DontDo = (props) => {
         <Fragment>
             <div className={classes.DontDo}>
                 <h2>Don't do</h2>
-                {props.data.map((elem) => {
-                    return <p>{elem}</p>
+                {props.data.map((elements, index) => {
+                    return <p key={index}>{elements}</p>
                 })}
             </div>
         </Fragment>

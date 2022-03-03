@@ -68,3 +68,12 @@
   .submitTaskButton {
     padding-top: 20px;
   }
+
+  .priority {
+    width: 200px;
+  }
+
+  .priority > input {
+    float: right;
+    margin-top: 5px;;
+  }
