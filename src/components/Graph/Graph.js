@@ -16,47 +16,51 @@ const Graph = () => {
     const [matrixDataDontDo, setMatrixDataDontDo] = useState([]);
 
     useEffect(() => {
-        const getMatrixData = async () => { 
-            const response = await fetch('https://matrix-2bb5b-default-rtdb.firebaseio.com/matrix.json');
-            var responseData = [];
-            responseData.push(await response.json());
+    const getMatrixData = async () => { 
+        const response = await fetch('https://matrix-2bb5b-default-rtdb.firebaseio.com/matrix.json');
+        const data = await response.json();
+        const loadedTasks = [];
 
-            const data = responseData[0];
-            const objectData = [];
-
-            Object.keys(data).forEach(key => {
-                objectData.push(data[key]);
-              });
-
-            const doFirstTasksList = objectData.filter(tasks => 
-                tasks.importancePriority === 1 && tasks.urgencyPriority === 0)
-                .map(tasks => tasks.name);
-
-            const delegateTasksList = objectData.filter(tasks => 
-                tasks.importancePriority === 0 && tasks.urgencyPriority === 0)
-                .map(tasks => tasks.name);
-            
-            const scheduleTasksList = objectData.filter(tasks => 
-                tasks.importancePriority === 1 && tasks.urgencyPriority === 1)
-                .map(tasks => tasks.name);
-
-            const dontDoTasksList = objectData.filter(tasks => 
-                tasks.importancePriority === 0 && tasks.urgencyPriority === 1)
-                .map(tasks => tasks.name);
-
-            // set state for each task 
-            setMatrixDataDoFirst(doFirstTasksList);
-            setMatrixDataSchedule(scheduleTasksList);
-            setMatrixDataDelegate(delegateTasksList);
-            setMatrixDataDontDo(dontDoTasksList)
+        for(const key in data) {
+            loadedTasks.push({
+                id : key,
+                name : data[key].name,
+                importancePriority : data[key].importancePriority,
+                urgencyPriority : data[key].urgencyPriority
+            })
         }
-        getMatrixData();
-    }, [matrixDataDoFirst, matrixDataSchedule, matrixDataDelegate, matrixDataDontDo])
+
+        // filter out different categories of tasks from the response
+        const doFirstTasksList = loadedTasks.filter(tasks => 
+            tasks.importancePriority === 1 && tasks.urgencyPriority === 0)
+            .map(tasks => tasks.name);
+
+        const delegateTasksList = loadedTasks.filter(tasks => 
+            tasks.importancePriority === 0 && tasks.urgencyPriority === 0)
+            .map(tasks => tasks.name);
+        
+        const scheduleTasksList = loadedTasks.filter(tasks => 
+            tasks.importancePriority === 1 && tasks.urgencyPriority === 1)
+            .map(tasks => tasks.name);
+
+        const dontDoTasksList = loadedTasks.filter(tasks => 
+            tasks.importancePriority === 0 && tasks.urgencyPriority === 1)
+            .map(tasks => tasks.name);
+
+        // set state for each task 
+        setMatrixDataDoFirst(doFirstTasksList);
+        setMatrixDataSchedule(scheduleTasksList);
+        setMatrixDataDelegate(delegateTasksList);
+        setMatrixDataDontDo(dontDoTasksList)
+    };
+    getMatrixData();
+    }, [matrixDataDoFirst, matrixDataSchedule, matrixDataDelegate, matrixDataDontDo]);
+
     return (
         <Fragment>
         <AddTask />
         <table className={classes.table}>
-            <tr>
+            <tbody><tr>
                 <td><DoFirst data={matrixDataDoFirst}/></td>
                 <td><Schedule data={matrixDataSchedule}/></td>
             </tr>
@@ -64,6 +68,7 @@ const Graph = () => {
                 <td><Delegate data={matrixDataDelegate}/></td>
                 <td><DontDo data={matrixDataDontDo}/></td>
             </tr>
+            </tbody>
         </table>
         </Fragment>
     )

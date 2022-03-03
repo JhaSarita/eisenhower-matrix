@@ -7,8 +7,8 @@ const Schedule = (props) => {
         <Fragment>
             <div className={classes.Schedule}>
                 <h2>Schedule</h2>
-                {props.data.map((elem) => {
-                    return <p>{elem}</p>
+                {props.data.map((elements, index) => {
+                    return <p key={index}>{elements}</p>
                 })}
             </div>
         </Fragment>

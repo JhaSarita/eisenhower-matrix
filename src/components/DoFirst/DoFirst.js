@@ -7,8 +7,8 @@ const DoFirst = (props) => {
         <Fragment>
             <div className={classes.DoFirst}>
             <h2>Do First</h2>
-                {props.data.map((elem) => {
-                    return <p>{elem}</p>
+                {props.data.map((elements, index) => {
+                    return <p key={index}>{elements}</p>
                 })}
             </div>
         </Fragment>

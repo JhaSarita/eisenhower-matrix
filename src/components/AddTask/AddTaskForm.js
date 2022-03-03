@@ -1,48 +1,49 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useRef } from 'react';
 
 import classes from './AddTaskForm.module.css';
 
 const AddTaskForm = (props) => {
 
-    const [importanceCheckbox, setImportanceCheckbox] = useState(0);
-    const [urgencyCheckbox, setUrgencyCheckbox] = useState(0);
-
     const taskNameRef = useRef();
+    const importanceCheckboxRef = useRef();
+    const urgencyCheckboxRef = useRef();
     
-    const importanceCheckboxHandler = (event) => {
-        if(event.target.checked) {
-            setImportanceCheckbox(1);
-        }  
-    }
-
-    const urgencyCheckboxHandler = (event) => {
-        if(event.target.checked) {
-            setUrgencyCheckbox(1);
-        }
-    }
     const submitTaskHandler = () =>  {
+        let id = Math.floor(Math.random() * 100);
+        let name = taskNameRef.current.value.trim();
+        if(name === '') {
+            alert('Taskname can\'t be empty !!');
+            return;
+        }
+
+        let importancePriority = +importanceCheckboxRef.current.checked;
+        let urgencyPriority = +urgencyCheckboxRef.current.checked;
+       
         const result = {
-            id : Math.floor(Math.random() * 100),
-            name : taskNameRef.current.value,
-            importancePriority : importanceCheckbox,
-            urgencyPriority : urgencyCheckbox
+            id,
+            name,
+            importancePriority,
+            urgencyPriority
         }
-
+    
         const submitTaskData = async () => {
-            const responseJSON = await fetch('https://matrix-2bb5b-default-rtdb.firebaseio.com/matrix.json', {
-                method : 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                  },
-                body : JSON.stringify(result)
 
-            });
-            const content = await responseJSON.json();
-        }
-        setImportanceCheckbox(0);
-        setUrgencyCheckbox(0);
+                const responseJSON = await fetch('https://matrix-2bb5b-default-rtdb.firebaseio.com/matrix.json', {
+                    method : 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body : JSON.stringify(result)
+                });
+                const content = await responseJSON.json();
+                console.log('content : ', content);
+            } 
+        
         submitTaskData();
+        alert('Task added successfully');
+
+        props.onCancel(); 
     }
 
     return(
@@ -50,19 +51,19 @@ const AddTaskForm = (props) => {
             <form className={classes.formContainer}>
                 <div className={classes.formContent}>
                     <label htmlFor="Task name">Task Name : </label>
-                    <input type="text" id="name" ref={taskNameRef} />
+                    <input type="text" id="name" ref={taskNameRef} required/>
                 </div>
                 <div>
                     <p>Please set the Task priority </p>
                 </div>
-                <div>
+                <div className={classes.priority}>
                     <label htmlFor="important">Important : </label>
-                    <input type="checkbox" name="importance" value="0" onChange={importanceCheckboxHandler} />
+                    <input type="checkbox" name="importance" value="0" ref={importanceCheckboxRef} />
                     
                 </div>
-                <div>
+                <div className={classes.priority}>
                     <label htmlFor="urgency">Urgent : </label>
-                    <input type="checkbox" name="urgency" value="0" onChange={urgencyCheckboxHandler} />
+                    <input type="checkbox" name="urgency" value="0" ref={urgencyCheckboxRef} />
                 </div>
                 <div className={classes.submitTaskButton}>
                 <button onClick={submitTaskHandler} className={classes.button} type="button">Submit task</button>
